@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "91271493746",
+    "firebase_url": "https://foodme-465bd.firebaseio.com",
+    "project_id": "foodme-465bd",
+    "storage_bucket": "foodme-465bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91271493746:android:16db9e7208b0a901b66aeb",
+        "android_client_info": {
+          "package_name": "com.example.foodme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "91271493746-afvnfp7l868lho9ce8tqimtmcrm7u8ms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlEGh-4CvvLZbTLDw9jl_GXfYXA0tFGEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "91271493746-afvnfp7l868lho9ce8tqimtmcrm7u8ms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
