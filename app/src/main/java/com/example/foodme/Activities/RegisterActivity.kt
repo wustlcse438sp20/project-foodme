@@ -63,12 +63,8 @@ class RegisterActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 val userInfoMap: MutableMap<String, Any> = HashMap()
                                 userInfoMap["email"] = tv_email.text.toString().toLowerCase()
-                                userInfoMap["nickname"] = tv_nickname.text.toString()
-                                userInfoMap["win"] = 0
-                                userInfoMap["lose"] = 0
-                                userInfoMap["chips"] = 1000 // I am not sure about the default amount of chips for a newly registered player. I set it as 1,000 for now.
+                                println(userInfoMap)
                                 AddUserIntoDB(userInfoMap)
-
                                 startActivity(Intent(this,
                                     LoginActivity::class.java))
                                 finish()
@@ -86,9 +82,11 @@ class RegisterActivity : AppCompatActivity() {
         db.collection("users")
             .add(userInfoMap)
             .addOnSuccessListener(OnSuccessListener<DocumentReference> { documentReference ->
+                println("created")
                 Toast.makeText(this, "Exercise created", Toast.LENGTH_LONG)
             })
             .addOnFailureListener(OnFailureListener { e ->
+                println("fuck off")
                 Toast.makeText(this, "Failed to insert data!", Toast.LENGTH_LONG)
             })
     }

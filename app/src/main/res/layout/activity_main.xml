@@ -49,6 +49,30 @@
             android:textColor="@android:color/white"
             android:textAllCaps="false"
             />
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:padding="16dp"
+            android:text="TO MAP"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            />
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimaryDark"
+            android:padding="16dp"
+            android:text="TO LOGOUT"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

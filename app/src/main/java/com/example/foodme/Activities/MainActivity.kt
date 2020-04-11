@@ -45,6 +45,22 @@ class MainActivity : AppCompatActivity() {
 
         btn_gallery.setOnClickListener {
         }
+
+        btn_map.setOnClickListener{
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        btn_logout.setOnClickListener {
+            logOut()
+        }
     }
 
+    fun logOut() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 }
