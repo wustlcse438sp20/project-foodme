@@ -67,6 +67,8 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
+                    println("a")
+
                     updateUI(user)
                 } else {
                     updateUI(null)
@@ -75,6 +77,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
+
+        println("b")
         if (currentUser != null) {
             if (currentUser.isEmailVerified) {
                 db.collection("users")
