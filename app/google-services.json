@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "91271493746-g27r62ho7smsg0t0e6n010c0mig4u262.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodme",
+            "certificate_hash": "60b1ca4f50160ee9d1bb39bc36ad22456aa862d0"
+          }
+        },
+        {
           "client_id": "91271493746-afvnfp7l868lho9ce8tqimtmcrm7u8ms.apps.googleusercontent.com",
           "client_type": 3
         }
