@@ -5,7 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
+import android.widget.TextView
 import android.widget.Toast
+import com.example.foodme.Activities.Data.User
 import com.example.foodme.R
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -19,16 +21,21 @@ import java.util.HashMap
 // This class reference: https://www.youtube.com/watch?v=MA8WbvROrLs
 class RegisterActivity : AppCompatActivity() {
     lateinit var db : FirebaseFirestore
+    public lateinit var emailText : TextView
+    public lateinit var userText : TextView
+
+
 
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-
         db = FirebaseFirestore.getInstance()
-
         auth = FirebaseAuth.getInstance()
+        emailText = findViewById(R.id.tv_email)
+        userText = findViewById(R.id.tv_nickname)
+
         btn_sign_up.setOnClickListener {
             signUpUser()
         }
@@ -52,17 +59,23 @@ class RegisterActivity : AppCompatActivity() {
             tv_password.requestFocus()
             return
         }
+        var email = emailText.text.toString()
+        var username = userText.text.toString()
 
         auth.createUserWithEmailAndPassword(tv_email.text.toString(), tv_password.text.toString())
             .addOnCompleteListener(this) { task ->
-
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     user?.sendEmailVerification()
                         ?.addOnCompleteListener { task ->
                             if (task.isSuccessful) {
+                                Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG)
+                                    .show()
                                 val userInfoMap: MutableMap<String, Any> = HashMap()
                                 userInfoMap["email"] = tv_email.text.toString().toLowerCase()
+                                // noti later hashmap to user (email instead of hash)
+                                val user = User(email, username, 12, 18)
+                                db.collection("users").document(email).set(user)
                                 println(userInfoMap)
                                 AddUserIntoDB(userInfoMap)
                                 startActivity(Intent(this,

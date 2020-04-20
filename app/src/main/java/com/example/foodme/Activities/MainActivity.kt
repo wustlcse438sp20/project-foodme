@@ -3,6 +3,7 @@ package com.example.foodme.Activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.foodme.Activities.Data.User
 import com.example.foodme.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +27,12 @@ class MainActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
+
+        val currentUser =
+            db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
+        currentUser.get().addOnSuccessListener { documentSnapshot ->
+            var data = documentSnapshot.toObjects(User::class.java)
+        }
     }
 
     override fun onStart() {
