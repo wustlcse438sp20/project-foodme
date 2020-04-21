@@ -1,160 +1,166 @@
 package com.example.foodme.Activities
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Looper
-import android.widget.Toast
+import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.foodme.Activities.Data.Results
+import com.example.foodme.Activities.Network.PlaceRepository
 import com.example.foodme.R
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.*
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_maps.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mMap: GoogleMap
+    // Map and location information objects
+    private lateinit var map: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private var latitude:Double=0.toDouble()
-    private var longitude:Double=0.toDouble()
 
-    private lateinit var mLastLocation:Location
-    private var mMarker: Marker?=null
+    private var homeLat : Double? = null
+    private var homeLong : Double? = null
+    private lateinit var foodToRecommend : String
+    private lateinit var homeAddress: String
+    private var nearByRestaurantsArr : Array<Results>?=null
 
-    //Location
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    lateinit var locationRequest: LocationRequest
-    lateinit var locationCallback: LocationCallback
+    // API
+    var placeRepository: PlaceRepository = PlaceRepository()
 
-    companion object {
-        private const val MY_PERMISSION_CODE : Int = 1000
-    }
+    // PERMISSION CONSTANT
+    private val REQUEST_LOCATION_PERMISSION = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+        //set the map and client location
         mapFragment.getMapAsync(this)
-
-
-        //Request runtime permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkLocationPermission()) {
-                buildLocationRequest();
-                buildLocationCallBack();
-                fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-            }
-        } else {
-            buildLocationRequest();
-            buildLocationCallBack();
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
-    private fun buildLocationCallBack() {
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult?) {
-                mLastLocation = p0!!.locations.get(p0!!.locations.size - 1) // Get last location
+    override fun onStart() {
+        super.onStart()
 
-                if (mMarker != null) {
-                    mMarker!!.remove()
-                }
+        foodToRecommend = intent.getStringExtra("recommendedFood")
 
-                latitude = mLastLocation.latitude
-                longitude = mLastLocation.longitude
+    }
 
-                var latLng = LatLng(latitude, longitude)
-                var markerOptions = MarkerOptions()
-                    .position(latLng)
-                    .title("Your position")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-
-                mMarker = mMap!!.addMarker(markerOptions)
-
-                // Move Camera
-                mMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                mMap!!.animateCamera(CameraUpdateFactory.zoomTo(11f))
+    //check the permissions
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.contains(PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
             }
         }
-    }
-
-    private fun buildLocationRequest() {
-        locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 5000
-        locationRequest.fastestInterval = 3000
-        locationRequest.smallestDisplacement = 10f
-    }
-
-    private fun checkLocationPermission() : Boolean{
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this, arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ), MY_PERMISSION_CODE)
-            } else {
-                ActivityCompat.requestPermissions(this, arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ), MY_PERMISSION_CODE)
-            }
-            return false
-        }
-        else
-            return true
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode) {
-            MY_PERMISSION_CODE->{
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        if (checkLocationPermission()) {
-                            buildLocationRequest();
-                            buildLocationCallBack();
-                            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                            mMap!!.isMyLocationEnabled = true
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    override fun onStop() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        super.onStop()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+        map = googleMap
 
+        //set the click longitude
+        setMapLongClick(map)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                mMap!!.isMyLocationEnabled = true
+        //set the user location
+        enableMyLocation()
+
+        navView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.showRestaurantsButton -> nearByRestaurants(foodToRecommend)
+                R.id.backButton -> goBackActivity()
             }
-        } else {
-            mMap!!.isMyLocationEnabled = true
+            true
         }
-        // Enable from control
-        mMap.uiSettings.isZoomControlsEnabled=true
+
+        map!!.setOnMarkerClickListener { marker ->
+            nearByRestaurantsArr!![Integer.parseInt(marker.snippet)]
+            val intent = Intent(this@MapsActivity, PlaceDetailActivity::class.java)
+            startActivity(intent)
+            true
+        }
+    }
+
+
+    //returns if the needed permissions are available
+    private fun isPermissionGranted() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+
+    //click listener for additional locations
+    private fun setMapLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            )
+        }
+    }
+
+    //sets the home location
+    private fun enableMyLocation() {
+        if (isPermissionGranted()) {
+            map.isMyLocationEnabled = true
+
+            //set the location to the home location
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    //store the location values
+                    homeLat =  location?.latitude as Double?
+                    homeLong = location?.longitude as Double?
+
+                    val geocoder = Geocoder(this@MapsActivity)
+                    val list = geocoder.getFromLocation(homeLat!!.toDouble(), homeLong!!.toDouble(), 1)
+                    homeAddress = list[0].getAddressLine(0)
+
+                    //set the location and zoom variables
+                    val homeLatLng = LatLng(homeLat as Double, homeLong as Double)
+                    val zoomLevel = 13f
+
+                    //move the camera and set a marker
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
+                    map.addMarker(MarkerOptions().position(homeLatLng))
+                }
+        }
+        else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf<String>(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_PERMISSION
+            )
+        }
+    }
+
+    private fun nearByRestaurants(typePlace: String) {
+        map.clear()
+        var url : String = "https://maps.googleapis.com/maps/api/place/textsearch/json?" +
+                "query=$typePlace" +
+                "+in+$homeAddress" +
+                "&key=AIzaSyAnSJQFVgcMDdxb1WzkQwLZM_zLpJNSWU0"
+        nearByRestaurantsArr = placeRepository.getNearbyRestaurants(map,typePlace, url)
+    }
+
+    private fun goBackActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

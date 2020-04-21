@@ -35,7 +35,7 @@ class CustomizationActivity : AppCompatActivity() {
 
         // lunch
         val pickLunchTimeBtn = findViewById<Button>(R.id.lunch_time)
-        val lunchTextView     = findViewById<TextView>(R.id.lunch_txt)
+        val lunchTextView = findViewById<TextView>(R.id.lunch_txt)
         pickLunchTimeBtn.setOnClickListener {
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
