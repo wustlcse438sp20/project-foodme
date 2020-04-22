@@ -55,8 +55,10 @@ class MainActivity : AppCompatActivity() {
 //        currentUser.get().addOnSuccessListener { documentSnapshot ->
 //            var data = documentSnapshot.toObjects(User::class.java)
 //        }
-        updateFood()
 
+        if (auth.currentUser != null) {
+            updateFood()
+        }
 
     }
 
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         var docRef = db.collection("users").document(currUserEmail);
         docRef.get().addOnSuccessListener { result ->
             if (!result.exists()) {
-                val user = User(currUserEmail, 12, 18)
+                val user = User(currUserEmail, "12:00", "18:00")
                 db.collection("users").document(currUserEmail).set(user)
             }
         }
@@ -97,6 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         // Danny added//
         btn_rec.setOnClickListener{
+            updateFood()
 
             dialogView()
         }
