@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var db : FirebaseFirestore
     lateinit var firestore: FirebaseFirestore
 
+    var temp_food = ""
+
     // Viewmodel for login
     private lateinit var viewModel: MainActivityViewModel
 
@@ -48,6 +50,14 @@ class MainActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         firestore = FirebaseFirestore.getInstance()
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+//        val currentUser =
+//            db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
+//        currentUser.get().addOnSuccessListener { documentSnapshot ->
+//            var data = documentSnapshot.toObjects(User::class.java)
+//        }
+        updateFood()
+
+
     }
 
 
@@ -69,7 +79,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        preference()
 
         btn_customization.setOnClickListener {
             val intent = Intent(this, CustomizationActivity::class.java)
@@ -88,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
         // Danny added//
         btn_rec.setOnClickListener{
+
             dialogView()
         }
         //danny added done//
@@ -97,18 +107,78 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun preference(){
-        var email = auth.currentUser!!.email.toString()
-        val sample = db.collection("users").whereEqualTo("american_Cusi",true)
-
-        test_test.text = " hi " + sample
+    private fun updateFood(){
+        val currentUser =
+            db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
+        var temp1 = ""
+        var temp2 = ""
+        var temp3 = ""
+        var temp4 = ""
+        var temp5 = ""
+        var temp6 = ""
+        var temp7 = ""
+        var temp8 = ""
+        var temp9 = ""
+        var temp10 = ""
+        var temp11 = ""
+        var temp12 = ""
+        var temp13 = ""
+        var temp14 = ""
+        currentUser.get().addOnSuccessListener { documentSnapshot ->
+            var data = documentSnapshot.toObjects(User::class.java)
+            if(data[0].american_Cusi==true){
+                temp1 = "American/ "
+            }
+            if(data[0].barbeque_Cusi==true){
+                temp2 = "Barbeque/ "
+            }
+            if(data[0].chinese_Cusi==true){
+                temp3 = "Chinese/ "
+            }
+            if(data[0].french_Cusi==true){
+                temp4 = "French/ "
+            }
+            if(data[0].hamburger_Cusi==true){
+                temp5 = "Hamburger/ "
+            }
+            if(data[0].indian_Cusi==true){
+                temp6 = "Indian/ "
+            }
+            if(data[0].italian_Cusi==true){
+                temp7 = "Italian/ "
+            }
+            if(data[0].japanese_Cusi==true){
+                temp8 = "Japanese/ "
+            }
+            if(data[0].mexican_Cusi==true){
+                temp9 = "Mexican/ "
+            }
+            if(data[0].pizza_Cusi==true){
+                temp10 = "Pizza/ "
+            }
+            if(data[0].seafood_Cusi==true){
+                temp11 = "Seafood/ "
+            }
+            if(data[0].steak_Cusi==true){
+                temp12 = "Steak/ "
+            }
+            if(data[0].sushi_Cusi==true){
+                temp13 = "Sushi/ "
+            }
+            if(data[0].thai_Cusi==true){
+                temp14 = "Thai/ "
+            }
+            temp_food = temp1 + temp2 + temp3 +temp4+temp5+temp6+temp7+temp8+temp9+temp10+temp11+temp12+temp13+temp14
+        }
     }
 
      private fun dialogView() {
          val dialogView = LayoutInflater.from(this).inflate(R.layout.recommendation, null)
-         val placeHolderFood = "hamburger" // Temporarily added to move to MapsActivity
+         updateFood()
+         var placeHolderFood = temp_food // Temporarily added to move to MapsActivity
+         println(temp_food)
          val mBuilder = AlertDialog.Builder(this)
-            .setMessage("Based on your recommendation, you like " + placeHolderFood) // Temporarily added to move to MapsActivity
+            .setMessage("You liked these food: " + temp_food + " Do you want to see our food recommendation?")
             .setView(dialogView)
             .setTitle("Recommendation")
          val mAlertDialog = mBuilder.show()
