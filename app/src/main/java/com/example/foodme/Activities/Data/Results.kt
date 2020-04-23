@@ -1,10 +1,10 @@
 package com.example.foodme.Activities.Data
 
-class Results {
 
+class Results {
     var name:String?=null
     var icon:String?=null
-    var geometry:Geometry?=null
+    var geometry: Geometry?=null
     var photos:Array<Photos>?=null
     var id:String?=null
     var place_id:String?=null
@@ -14,5 +14,16 @@ class Results {
     var scope:String?=null
     var types:Array<String>?=null
     var vicinity:String?=null
-    var opening_hours:OpeningHours?=null
+    var opening_hours: OpeningHours?=null
+
+    val address_components : Array<AddressComponent>?=null
+    val adr_address : String?=null
+    val formatted_address : String?=null
+    val formatted_phone_number : String?=null
+    val international_phone_number : String?=null
+    val reviews : Array<Review>?=null
+    val url : String?=null
+    val utc_offset : Int=0
+    val website : String?=null
+
 }

@@ -32,7 +32,6 @@ class CustomizationActivity : AppCompatActivity() {
         //firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-        var email = auth.currentUser!!.email.toString()
 
         // lunch
         val pickLunchTimeBtn = findViewById<Button>(R.id.lunch_time)
@@ -43,10 +42,6 @@ class CustomizationActivity : AppCompatActivity() {
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
                 lunchTextView.text = SimpleDateFormat("HH:mm").format(cal.time)
-                val templun= lunchTextView.text.toString()
-                db.collection("users").document(email).update("lunch_noti",templun).addOnSuccessListener {
-                }
-
             }
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
         }
@@ -59,10 +54,7 @@ class CustomizationActivity : AppCompatActivity() {
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
                 dinTextView.text = SimpleDateFormat("HH:mm").format(cal.time)
-                val tempdin = dinTextView.text.toString()
-                db.collection("users").document(email).update("dinner_noti",tempdin).addOnSuccessListener {
-                }
-                }
+            }
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
         }
 
@@ -71,6 +63,7 @@ class CustomizationActivity : AppCompatActivity() {
 
         checkbox_1?.setOnCheckedChangeListener { buttonView, isChecked ->
             val msg = "You have " + (if (isChecked) "checked" else "unchecked") + " American Cuisine."
+            var email = auth.currentUser!!.email.toString()
             if(isChecked) {
                 db.collection("users").document(email).update("american_Cusi", true).addOnSuccessListener {
                 }

@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.IntegerRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,6 +21,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_maps.*
 
+import android.content.ContentValues.TAG
+import com.example.foodme.Activities.Common.Common
+import com.example.foodme.Activities.Common.Common.currSelectedRestaurant
+import java.util.*
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Map and location information objects
@@ -29,8 +35,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var homeLat : Double? = null
     private var homeLong : Double? = null
+    private var homeAddress : String = "1600 Amphitheatre Pkwy, Mountain View, CA 94043, United States"
     private lateinit var foodToRecommend : String
-    private lateinit var homeAddress: String
     private var nearByRestaurantsArr : Array<Results>?=null
 
     // API
@@ -88,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         map!!.setOnMarkerClickListener { marker ->
-            nearByRestaurantsArr!![Integer.parseInt(marker.snippet)]
+            Common.currSelectedResults = Common.currNearByRestaurants!![Integer.parseInt(marker.snippet)]
             val intent = Intent(this@MapsActivity, PlaceDetailActivity::class.java)
             startActivity(intent)
             true
@@ -124,11 +130,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     //store the location values
-                    homeLat =  location?.latitude as Double?
-                    homeLong = location?.longitude as Double?
+                    homeLat =  location?.latitude as Double
+                    homeLong = location?.longitude as Double
 
-                    val geocoder = Geocoder(this@MapsActivity)
-                    val list = geocoder.getFromLocation(homeLat!!.toDouble(), homeLong!!.toDouble(), 1)
+                    val geocoder = Geocoder(this@MapsActivity, Locale.getDefault())
+                    val list = geocoder.getFromLocation(homeLat as Double, homeLong as Double, 1)
                     homeAddress = list[0].getAddressLine(0)
 
                     //set the location and zoom variables
@@ -155,7 +161,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 "query=$typePlace" +
                 "+in+$homeAddress" +
                 "&key=AIzaSyAnSJQFVgcMDdxb1WzkQwLZM_zLpJNSWU0"
-        nearByRestaurantsArr = placeRepository.getNearbyRestaurants(map,typePlace, url)
+        placeRepository.getNearbyRestaurants(map,typePlace, url)
     }
 
     private fun goBackActivity() {

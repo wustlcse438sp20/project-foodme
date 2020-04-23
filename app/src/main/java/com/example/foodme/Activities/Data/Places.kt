@@ -1,7 +1,7 @@
 package com.example.foodme.Activities.Data
 
-class Places {
 
+class Places {
     var html_attributions: Array<String>?=null
     var status:String?=null
     var next_page_token:String?=null
