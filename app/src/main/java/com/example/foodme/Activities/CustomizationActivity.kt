@@ -1,6 +1,10 @@
 package com.example.foodme.Activities
 
+import MyAlarmReceiver
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -22,7 +26,11 @@ class CustomizationActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     lateinit var db : FirebaseFirestore
+//    // Alarm manager
 
+    private val REQUEST_CODE = 100
+    private lateinit var alarmManager: AlarmManager
+    private lateinit var alarmIntent: PendingIntent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +50,13 @@ class CustomizationActivity : AppCompatActivity() {
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
                 lunchTextView.text = SimpleDateFormat("HH:mm").format(cal.time)
-                val templun= lunchTextView.text.toString()
-                db.collection("users").document(email).update("lunch_noti",templun).addOnSuccessListener {
+                val templun_h= SimpleDateFormat("HH").format(cal.time).toString().toInt()
+                db.collection("users").document(email).update("lunch_noti_h",templun_h).addOnSuccessListener {
                 }
+                val templun_m= SimpleDateFormat("mm").format(cal.time).toString().toInt()
+                db.collection("users").document(email).update("lunch_noti_m",templun_m).addOnSuccessListener {
+                }
+
             }
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
         }
@@ -57,17 +69,18 @@ class CustomizationActivity : AppCompatActivity() {
                 cal.set(Calendar.HOUR_OF_DAY, hour)
                 cal.set(Calendar.MINUTE, minute)
                 dinTextView.text = SimpleDateFormat("HH:mm").format(cal.time)
-                val tempdin = dinTextView.text.toString()
-                db.collection("users").document(email).update("dinner_noti",tempdin).addOnSuccessListener {
+                val tempdin_h = SimpleDateFormat("HH").format(cal.time).toString().toInt()
+                db.collection("users").document(email).update("dinner_noti_h",tempdin_h).addOnSuccessListener {
                 }
-
+                val tempdin_m = SimpleDateFormat("mm").format(cal.time).toString().toInt()
+                db.collection("users").document(email).update("dinner_noti_m",tempdin_m).addOnSuccessListener {
+                }
             }
             TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
         }
 
         //checkbox
         val checkbox_1 = findViewById<CheckBox>(R.id.checkBox_ame)
-
         checkbox_1?.setOnCheckedChangeListener { buttonView, isChecked ->
             val msg = "You have " + (if (isChecked) "checked" else "unchecked") + " American Cuisine."
             if(isChecked) {
@@ -261,8 +274,47 @@ class CustomizationActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        /// alarm set-up
+        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, MyAlarmReceiver::class.java)
+        alarmIntent = PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //get data from fb
+        val currentUser =
+            db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
+
+        var lunh = ""
+        var lunm = ""
+        var dinh = ""
+        var dinm = ""
+
+//        currentUser.get().addOnSuccessListener { documentSnapshot ->
+//            var data = documentSnapshot.toObjects(User::class.java)
+//
+//
+//
+//        }
+
+//        Setting the specific time for the alarm manager to trigger the intent, in this example, the alarm is set to go off at 23:30, update the time according to your need
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 22)
+        calendar.set(Calendar.MINUTE, 48)
 
 
+        // Starts the alarm manager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            alarmIntent
+        )
+
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        // Cancels the pendingIntent if it is no longer needed after this activity is destroyed.
+        alarmManager.cancel(alarmIntent)
     }
 
 

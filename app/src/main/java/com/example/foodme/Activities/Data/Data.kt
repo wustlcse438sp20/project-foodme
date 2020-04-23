@@ -2,8 +2,10 @@ package com.example.foodme.Activities.Data
 
 data class User(
     val email: String? = null,
-    var lunch_noti: String? = null,
-    var dinner_noti: String? = null,
+    var lunch_noti_h: Int? = null,
+    var lunch_noti_m: Int? = null,
+    var dinner_noti_h: Int? = null,
+    var dinner_noti_m: Int? = null,
     var american_Cusi: Boolean? = false,
     var barbeque_Cusi: Boolean? = false,
     var chinese_Cusi: Boolean? = false,

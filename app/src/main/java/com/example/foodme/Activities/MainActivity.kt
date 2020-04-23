@@ -1,23 +1,22 @@
 package com.example.foodme.Activities
 
+import MyAlarmReceiver
 import android.app.AlertDialog
-import android.content.ContentValues
+import android.content.ComponentName
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.example.foodme.Activities.Data.User
 import com.example.foodme.R
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.recommendation.*
 
-import androidx.lifecycle.ViewModelProviders
-import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.ErrorCodes
-import com.firebase.ui.auth.IdpResponse
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var firestore: FirebaseFirestore
     var temp_food = ""
     private var fav_Food = ArrayList<String>()
+
 
     // Viewmodel for login
     private lateinit var viewModel: MainActivityViewModel
@@ -50,16 +50,18 @@ class MainActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         firestore = FirebaseFirestore.getInstance()
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        if (auth.currentUser != null) {
-            updateFood()
-        }
 
     }
 
 
     override fun onStart() {
         super.onStart()
+        if (auth.currentUser != null) {
+            if(fav_Food.size!=0) {
 
+                updateFood()
+            }
+        }
         if (shouldStartSignIn()) {
             startSignIn()
             return
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         var docRef = db.collection("users").document(currUserEmail);
         docRef.get().addOnSuccessListener { result ->
             if (!result.exists()) {
-                val user = User(currUserEmail, "12:00", "18:00")
+                val user = User(currUserEmail, 12, 0,18,0)
                 db.collection("users").document(currUserEmail).set(user)
             }
         }
@@ -93,7 +95,6 @@ class MainActivity : AppCompatActivity() {
 
         // Danny added//
         btn_rec.setOnClickListener{
-            updateFood()
 
             dialogView()
         }
@@ -207,10 +208,14 @@ class MainActivity : AppCompatActivity() {
      private fun dialogView() {
          val dialogView = LayoutInflater.from(this).inflate(R.layout.recommendation, null)
          updateFood()
-         println(fav_Food.toString())
+         var rand = 0
+         if(fav_Food.size!=0) {
+             var rand = (0..fav_Food.size - 1).random()
+             println(fav_Food.get(rand))
+         }
          val placeHolderFood = "hamburger" // Temporarily added to move to MapsActivity
          val mBuilder = AlertDialog.Builder(this)
-            .setMessage("Based on your recommendation, you like " + temp_food + " and we recommend you to eat " + placeHolderFood +" food."+ "Do you want to see our recommended restaurants?") // Temporarily added to move to MapsActivity
+            .setMessage("Based on your recommendation, you like " + temp_food + " and we recommend you to eat " + placeHolderFood + " food."+ "Do you want to see our recommended restaurants?") // Temporarily added to move to MapsActivity
             .setView(dialogView)
             .setTitle("Recommendation")
          val mAlertDialog = mBuilder.show()
