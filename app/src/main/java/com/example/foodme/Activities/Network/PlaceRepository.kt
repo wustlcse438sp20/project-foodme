@@ -3,10 +3,7 @@ package com.example.foodme.Activities.Network
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.foodme.Activities.Common.Common
-import com.example.foodme.Activities.Common.Common.currSelectedRestaurant
 import com.example.foodme.Activities.Data.Places
-import com.example.foodme.Activities.Data.Restaurant
-import com.example.foodme.Activities.Data.Results
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -42,27 +39,6 @@ class PlaceRepository {
 
                     map!!.addMarker(markerOptions) // Adding a marker on a map literally
                 }
-            }
-        })
-    }
-
-
-    fun getRestaurantDetails(param : String)  {
-        Log.e(TAG, param)
-        var respond: Call<Restaurant> = service.getRestaurantDetails(param)
-        respond.enqueue(object: Callback<Restaurant> {
-
-            override fun onFailure(call: Call<Restaurant>, t: Throwable) {
-                // Toast or throw an exception. This shouldn't happen btw.
-
-                throw t
-            }
-
-            override fun onResponse(call: Call<Restaurant>, response: Response<Restaurant>) {
-
-                Log.e(TAG, response.body().toString())
-                Log.e(TAG, response.body()!!.result!!.name)
-                Common.currSelectedRestaurant = response.body()
             }
         })
     }

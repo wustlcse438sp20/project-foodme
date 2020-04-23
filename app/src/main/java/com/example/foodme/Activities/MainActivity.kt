@@ -91,6 +91,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_gallery.setOnClickListener {
+            val intent = Intent(this, GalleryActivity::class.java)
+            startActivity(intent)
+            finish()
+
         }
 
         // Danny added//

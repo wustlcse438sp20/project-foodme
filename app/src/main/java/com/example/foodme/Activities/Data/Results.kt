@@ -25,5 +25,4 @@ class Results {
     val url : String?=null
     val utc_offset : Int=0
     val website : String?=null
-
 }

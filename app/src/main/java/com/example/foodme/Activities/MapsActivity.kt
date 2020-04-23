@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.activity_maps.*
 
 import android.content.ContentValues.TAG
 import com.example.foodme.Activities.Common.Common
-import com.example.foodme.Activities.Common.Common.currSelectedRestaurant
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
