@@ -1,15 +1,12 @@
-package com.example.foodme.Activities
+package com.example.foodme.activities
 
-import MyAlarmReceiver
 import android.app.AlertDialog
-import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
-import com.example.foodme.Activities.Data.User
+import com.example.foodme.activities.Data.User
 import com.example.foodme.R
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
@@ -58,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         if (auth.currentUser != null) {
             if(fav_Food.size!=0) {
-
                 updateFood()
             }
         }
@@ -69,6 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         // Check if this user has a document associated with themselves
         val currUserEmail : String = auth.currentUser!!.email.toString()
+        welcome.text = "Welcome! \n " + currUserEmail
         var docRef = db.collection("users").document(currUserEmail);
         docRef.get().addOnSuccessListener { result ->
             if (!result.exists()) {
@@ -256,6 +253,8 @@ class MainActivity : AppCompatActivity() {
     fun logOut() {
         viewModel.isSigningIn = false
         auth.signOut()
+        val toMainIntent = Intent(this, MainActivity::class.java)
+        startActivity(toMainIntent)
         finish()
     }
 }
