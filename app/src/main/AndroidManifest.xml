@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Activities.PlaceDetailActivity" />
+        <activity android:name=".activities.PlaceDetailActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -30,15 +30,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".Activities.GalleryActivity"/>
+        <activity android:name=".activities.GalleryActivity"/>
         <activity
-            android:name=".Activities.MapsActivity"
+            android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".Activities.CustomizationActivity" />
-        <activity android:name=".Activities.RouletteActivity" />
-        <activity android:name=".Activities.RollActivity"/>
-        <activity android:name=".Activities.RecommendationActivity" />
-        <activity android:name=".Activities.MainActivity">
+        <activity android:name=".activities.CustomizationActivity" />
+        <activity android:name=".activities.RouletteActivity" />
+        <activity android:name=".activities.RollActivity"/>
+        <activity android:name=".activities.RecommendationActivity" />
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context=".Activities.GalleryActivity">
+    tools:context=".activities.GalleryActivity">
 
     <!--ImageView in which image will be set-->
     <ImageView
