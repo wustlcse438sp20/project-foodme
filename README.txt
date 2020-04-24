@@ -17,7 +17,7 @@ Any information you think we should know about your submission
 - GalleryActivity: We wanted to make GalleryActivty more like Instagram. Where you take a photo and a collection of photos taken using our app are displayed.
 However, due to the lack of time, we couldn't get there. Since gallery is not our main activity, we decide to spend more times on enhancing other activities. 
 - Maps and PlaceDetail activities: These activities are pretty straightforward and work seamlessly. 
-- Roulette Activity - Could have better UI/ animation
+- Roulette Activity - Was attempying to generate some roulette-like image depending on the number of choices, but the draw library innate to android didn't work as planned.
 
 * Is there anything that you did that you feel might be unclear? Explain it here.
 
