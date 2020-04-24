@@ -60,7 +60,13 @@ class MainActivity : AppCompatActivity() {
                 var lunch_m = data[0].lunch_noti_m.toString()
                 var din_h = data[0].dinner_noti_h.toString()
                 var din_m = data[0].dinner_noti_m.toString()
-                txtfortime.text = "Your lunch time is around " + lunch_h + ". Your dinner time is around " + din_h+ "pm."
+
+                var tempdef = ":00"
+                if (lunch_h.toInt()<12){
+                    tempdef = "am"
+                }
+
+                txtfortime.text = "Your lunch time is around " + lunch_h  + tempdef +". Your dinner time is around " + din_h+ ":00."
 
             }
         }
