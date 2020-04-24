@@ -47,19 +47,13 @@ class MainActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         firestore = FirebaseFirestore.getInstance()
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
         if (auth.currentUser != null) {
             val currentUser =
                 db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
 
             if(fav_Food.size!=0) {
                 updateFood()
-                }
+            }
             currentUser.get().addOnSuccessListener { documentSnapshot ->
                 var data = documentSnapshot.toObjects(User::class.java)
                 var lunch_h = data[0].lunch_noti_h.toString()
@@ -70,6 +64,13 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+
+
+    }
+
+
+    override fun onStart() {
+        super.onStart()
         if (shouldStartSignIn()) {
             startSignIn()
             return
@@ -220,13 +221,14 @@ class MainActivity : AppCompatActivity() {
     }
 
      private fun dialogView() {
-         val dialogView = LayoutInflater.from(this).inflate(R.layout.recommendation, null)
          updateFood()
+         val dialogView = LayoutInflater.from(this).inflate(R.layout.recommendation, null)
+
          var rand = 0
          var placeHolderFood = "hamburger"
          if(fav_Food.size!=0) {
              var rand = (0..fav_Food.size - 1).random()
-             placeHolderFood = fav_Food.get(rand)
+             placeHolderFood = fav_Food.get(rand).toString()
          }
           // Temporarily added to move to MapsActivity
          val mBuilder = AlertDialog.Builder(this)
@@ -236,7 +238,7 @@ class MainActivity : AppCompatActivity() {
          val mAlertDialog = mBuilder.show()
          mAlertDialog.dia_go.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
-            intent.putExtra("recommendedFood", "placeHolderFood")
+            intent.putExtra("recommendedFood", placeHolderFood)
             startActivity(intent)
             mAlertDialog.dismiss()
          }
