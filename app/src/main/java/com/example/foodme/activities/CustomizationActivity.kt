@@ -271,48 +271,7 @@ class CustomizationActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        /// alarm set-up
-//        alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        val intent = Intent(this, MyAlarmReceiver::class.java)
-//        alarmIntent = PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//
-//        //get data from fb
-//        val currentUser =
-//            db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
-//
-//        var lunh = ""
-//        var lunm = ""
-//        var dinh = ""
-//        var dinm = ""
-//
-////        currentUser.get().addOnSuccessListener { documentSnapshot ->
-////            var data = documentSnapshot.toObjects(User::class.java)
-////
-//
-//
-//        }
-
-//        Setting the specific time for the alarm manager to trigger the intent, in this example, the alarm is set to go off at 23:30, update the time according to your need
-//        val calendar = Calendar.getInstance()
-//        calendar.timeInMillis = System.currentTimeMillis()
-//        calendar.set(Calendar.HOUR_OF_DAY, 22)
-//        calendar.set(Calendar.MINUTE, 48)
-//
-//
-//        // Starts the alarm manager
-//        alarmManager.setRepeating(
-//            AlarmManager.RTC_WAKEUP,
-//            calendar.timeInMillis,
-//            AlarmManager.INTERVAL_DAY,
-//            alarmIntent
-//        )
-//
     }
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        // Cancels the pendingIntent if it is no longer needed after this activity is destroyed.
-//        alarmManager.cancel(alarmIntent)
-//    }
 
 
 
