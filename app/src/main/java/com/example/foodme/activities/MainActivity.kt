@@ -54,8 +54,20 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (auth.currentUser != null) {
+            val currentUser =
+                db.collection("users").whereEqualTo("email", auth.currentUser!!.email)
+
             if(fav_Food.size!=0) {
                 updateFood()
+                }
+            currentUser.get().addOnSuccessListener { documentSnapshot ->
+                var data = documentSnapshot.toObjects(User::class.java)
+                var lunch_h = data[0].lunch_noti_h.toString()
+                var lunch_m = data[0].lunch_noti_m.toString()
+                var din_h = data[0].dinner_noti_h.toString()
+                var din_m = data[0].dinner_noti_m.toString()
+                txtfortime.text = "Your lunch time is " + lunch_h +":" + lunch_m + ". Your dinner time is " + din_h+ ":" + din_m+"."
+
             }
         }
         if (shouldStartSignIn()) {
@@ -73,6 +85,8 @@ class MainActivity : AppCompatActivity() {
                 db.collection("users").document(currUserEmail).set(user)
             }
         }
+// update text
+
 
 
         btn_customization.setOnClickListener {
@@ -96,7 +110,6 @@ class MainActivity : AppCompatActivity() {
 
         // Danny added//
         btn_rec.setOnClickListener{
-
             dialogView()
         }
         //danny added done//
@@ -210,11 +223,12 @@ class MainActivity : AppCompatActivity() {
          val dialogView = LayoutInflater.from(this).inflate(R.layout.recommendation, null)
          updateFood()
          var rand = 0
+         var placeHolderFood = "hamburger"
          if(fav_Food.size!=0) {
              var rand = (0..fav_Food.size - 1).random()
-             println(fav_Food.get(rand))
+             placeHolderFood = fav_Food.get(rand)
          }
-         val placeHolderFood = "hamburger" // Temporarily added to move to MapsActivity
+          // Temporarily added to move to MapsActivity
          val mBuilder = AlertDialog.Builder(this)
             .setMessage("Based on your recommendation, you like " + temp_food + " and we recommend you to eat " + placeHolderFood + " food."+ "Do you want to see our recommended restaurants?") // Temporarily added to move to MapsActivity
             .setView(dialogView)
@@ -222,7 +236,7 @@ class MainActivity : AppCompatActivity() {
          val mAlertDialog = mBuilder.show()
          mAlertDialog.dia_go.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
-            intent.putExtra("recommendedFood", placeHolderFood)
+            intent.putExtra("recommendedFood", "placeHolderFood")
             startActivity(intent)
             mAlertDialog.dismiss()
          }

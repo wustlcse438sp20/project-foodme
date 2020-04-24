@@ -54,6 +54,7 @@
             android:text="Food Me"
             android:fontFamily="sans-serif-black"
             android:textSize="40dp"/>
+
     </LinearLayout>
 
 
@@ -67,6 +68,13 @@
 
         app:layout_constraintTop_toBottomOf="@id/logo"
         android:layout_marginTop="40dp">
+        <TextView
+            android:id="@+id/txtfortime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Your lunch time is 12:00pm. Your dinner time is 18:00pm."
+            android:textSize="16dp"/>
 
         <Button
             android:id="@+id/btn_customization"
